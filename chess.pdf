@@ -1,0 +1,21 @@
+Period: 2
+Group Members: Edmund Chin, Rachel Gao
+Group Name: 
+Project Title: Chess
+Description: This is a playable chess game against a simple, programmed bot. The game should be able to:
+Simulate the pieces as if they were in a real game of chess (rules of movement, taking pieces, etc.)
+When a piece is selected to move, highlight playable moves
+Have a bot that can simulate possible moves and assign a point system to figure out the “best move” possible according to the given parameters (what constitutes more/less points)
+If possible, allow two-player functionality and/or a timer system
+
+UML Diagram:
+
+
+How does it work?
+Start the program
+If a two-player system is implemented, choose between playing against another player or a bot.
+Start on white or black?
+Click on a piece to select it
+Click on a highlighted square to place the piece there, signaling the end of the turn
+The bot will calculate the “best move” and move accordingly
+Game ends in checkmate

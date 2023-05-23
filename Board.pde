@@ -61,4 +61,5 @@ class Board{
       //                                 {new Rook(p1Color), new Knight(p1Color), new Bishop(p1Color), new Queen(p1Color), new King(p1Color), new Bishop()p1Color, new Knight(p1Color), new Rook(p1Color)}         
       //                               };
       //}
+
 }

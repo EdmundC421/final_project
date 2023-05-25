@@ -9,6 +9,7 @@ class piece {
     location.x = x;
     location.y = y;
   }
+  
 }
 //---------------------------------------------------------------------------------------
 class rook extends piece {
@@ -89,16 +90,40 @@ class board {
     }
   }
 
-  public board() {
+  public board(color playerColor, boolean versusAi) {
+    if(playerColor == color(0,0,0)){
+      p1Color = color(#FFFFFF);
+      p1Standby = true;
+      p1PieceSelected = false;
+      p2StandBy = false;
+      p2PieceSelected = false;
+    } else {
+      p1Color = color(#000000);
+      p1Standby = false;
+      p1PieceSelected =false;
+      if(versusAi == false){
+        p2Standby = true;
+        p2PieceSelected = false;
+        aiTurn = false;
+      } else {
+        aiTurn = true;
+        p2Standby = false;
+        p2PieceSelected = false;
+      }   
+    }
+  }
+    
+    
   }
 }
 
 void setup() {
   size(800, 800);
-
-  board newGame = new board();
+  board newGame = new board(color(0,0,0), false);
   newGame.grid();
 }
 void draw() {
-  
+ while(p1Standby == true|| p1Selected == true){
+   
+ }
 }

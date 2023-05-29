@@ -1,9 +1,9 @@
-public class piece {
+class piece{
   public PVector location;
   public color pieceColor;
   public PImage pieceImage;
 
-  public piece(color pieceColor) {
+  public piece(color pieceColor, PVector location) {
     this.pieceColor = pieceColor;
   }
   public void move(int x, int y) {
@@ -19,14 +19,22 @@ public class piece {
   public void setImage(PImage img){
     pieceImage = img;
   }
+  public PImage getPieceImage(){
+    return pieceImage;
+  }
   
 }
 //---------------------------------------------------------------------------------------
 class rook extends piece {
   PVector[] allMoves;
 
-  public rook(color pieceColor) {
-    super(pieceColor);
+  public rook(color pieceColor, PVector location) {
+    super(pieceColor, location);
+    if(pieceColor == color(#FFFFFF)){
+      pieceImage = loadImage("whiteRook.png");
+    } else {
+      pieceImage = loadImage("blackRook.png");
+    }
   }
   
   
@@ -38,32 +46,52 @@ class ai {
 class bishop extends piece {
   PVector[] allMoves;
 
-  public bishop(color pieceColor) {
-    super(pieceColor);
+  public bishop(color pieceColor, PVector location) {
+    super(pieceColor, location);
+    if(pieceColor == color(#FFFFFF)){
+      pieceImage = loadImage("whiteBishop.png");
+    } else {
+      pieceImage = loadImage("blackBishop.png");
+    }
   }
 }
 //---------------------------------------------------------------------------------------
 class king extends piece {
   PVector[] allMoves;
 
-  public king(color pieceColor) {
-    super(pieceColor);
+  public king(color pieceColor, PVector location) {
+    super(pieceColor, location);
+    if(pieceColor == color(#FFFFFF)){
+      pieceImage = loadImage("whiteKing.png");
+    } else {
+      pieceImage = loadImage("blackKing.png");
+    }
   }
 }
 //---------------------------------------------------------------------------------------
 class knight extends piece {
   PVector[] allMoves;
 
-  public knight(color pieceColor) {
-    super(pieceColor);
+  public knight(color pieceColor, PVector location) {
+    super(pieceColor, location);
+    if(pieceColor == color(#FFFFFF)){
+      pieceImage = loadImage("whiteKnight.png");
+    } else {
+      pieceImage = loadImage("blackKnight.png");
+    }
   }
 }
 //---------------------------------------------------------------------------------------
 class pawn extends piece {
   PVector[] allMoves;
 
-  public pawn(color pieceColor) {
-    super(pieceColor);
+  public pawn(color pieceColor, PVector location) {
+    super(pieceColor, location);
+    if(pieceColor == color(#FFFFFF)){
+      pieceImage = loadImage("whitePawn.png");
+    } else {
+      pieceImage = loadImage("whitePawn.png");
+    }
   }
 }
 //---------------------------------------------------------------------------------------
@@ -123,6 +151,16 @@ public class board {
         p2PieceSelected = false;
       }   
     }
+      //piece[][]pieces = {
+      //  //{new rook(p2Color,new PVector(0,0)),new knight((p2Color,new PVector(1,0)),new bishop(p2Color,new PVector(2,0)),new queen(p2Color,new PVector(3,0)),new king(p2Color,new PVector(4,0)),new bishop(p2Color,new PVector(5,0)),new knight(p2Color,new PVector(6,0)),new rook(p2Color,new PVector(7,0))},
+      //  {new pawn(p2Color,new PVector(0,1)),new pawn(p2Color,new PVector(1,1)),new pawn(p2Color,new PVector(2,1)),new pawn(p2Color,new PVector(3,1)),new pawn(p2Color,new PVector(4,1)),new pawn(p2Color,new PVector(5,1)),new pawn(p2Color,new PVector(6,1)),new pawn(p2Color,new PVector(7,1))},
+      //  {null,null,null,null,null,null,null,null},
+      //  {null,null,null,null,null,null,null,null},
+      //  {null,null,null,null,null,null,null,null},
+      //  {null,null,null,null,null,null,null,null},
+      //  {new pawn(p1Color,new PVector(0,6)),new pawn(p1Color,new PVector(1,6)),new pawn(p1Color,new PVector(2,6)),new pawn(p1Color,new PVector(3,6)),new pawn(p1Color,new PVector(4,6)),new pawn(p1Color,new PVector(5,6)),new pawn(p1Color,new PVector(6,6)),new pawn(p1Color,new PVector(7,6))},
+      //  //{new rook(p1Color,new PVector(0,7)),new knight(p1Color,new PVector(1,7)),new bishop(p1Color,new PVector(2,7)), new queen(p1Color,new PVector(3,7)),new king(p1Color,new PVector(4,7)), new bishop(p1Color,new PVector(5,7)),new knight(p1Color,new PVector(6,7)),new rook(p1Color,new PVector(7,7))},
+      //};
   }
     public boolean getp1Standby(){
       return p1Standby;
@@ -148,27 +186,62 @@ public class board {
     public boolean getaiTurn(){
       return aiTurn;
     }
-    public void drawPieces(color p1Color){
-      int rowCounter = 0;
-      int columnCounter = 0;
-      for(Object[] pRow: pieces){
-        for(Object p: pRow){
-          image(
-        }
-        columnCounter =0;
-        rowCounter++;
-      }
-    }
-  }
+    public void drawPieces(){
+      //int rowCounter = 0;
+      //int columnCounter = 0;
+      //for(piece[] pRow: pieces){
+      //  for(piece p: pRow){
+      //    if(p ==null){
+      //      columnCounter++;
+      //      break;
+      //    }else {
+      //    image(p.pieceImage,columnCounter,rowCounter);
+      //    columnCounter++;
+      //    }  
+      //}
+      //  columnCounter =0;
+      //  rowCounter++;
+      //}
+      
+    //  for(int row = 0;row < 7;row++){
+    //    for(int column = 0; column < 7;column++){
+    //      if(pieces[row][column] == null){
+    //        break;
+    //      }else{
+    //        image(pieces[row][column],row*100,column*100);
+    //    }
+    //  }
+    //}
+    
+    image(pieces[0][0].getPieceImage(),0,0);
+    
+}
+}
+//-----------------------------------------------------------------------------------------------------------
 
 board newGame;
+PImage whiteRook;
 void setup() {
   size(800, 800);
-   newGame = new board(color(#000000), false);
+  newGame = new board(color(#000000), false);
   newGame.grid();
-  newGame.drawPieces();
+  whiteRook = loadImage("whiteRook.png");
+  newGame.pieces = {
+        //{new rook(p2Color,new PVector(0,0)),new knight((p2Color,new PVector(1,0)),new bishop(p2Color,new PVector(2,0)),new queen(p2Color,new PVector(3,0)),new king(p2Color,new PVector(4,0)),new bishop(p2Color,new PVector(5,0)),new knight(p2Color,new PVector(6,0)),new rook(p2Color,new PVector(7,0))},
+        {new pawn(p2Color,new PVector(0,1)),new pawn(p2Color,new PVector(1,1)),new pawn(p2Color,new PVector(2,1)),new pawn(p2Color,new PVector(3,1)),new pawn(p2Color,new PVector(4,1)),new pawn(p2Color,new PVector(5,1)),new pawn(p2Color,new PVector(6,1)),new pawn(p2Color,new PVector(7,1))},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {null,null,null,null,null,null,null,null},
+        {new pawn(p1Color,new PVector(0,6)),new pawn(p1Color,new PVector(1,6)),new pawn(p1Color,new PVector(2,6)),new pawn(p1Color,new PVector(3,6)),new pawn(p1Color,new PVector(4,6)),new pawn(p1Color,new PVector(5,6)),new pawn(p1Color,new PVector(6,6)),new pawn(p1Color,new PVector(7,6)), knight(p1Color,new PVector(6,7)),new rook(p1Color,new PVector(7,7))}//,
+      };
+  
+  
 }
 void draw() {
- while(newGame.getp1Standby() == true|| newGame.getp1PieceSelected() == true){
- }
+ //while(newGame.getp1Standby() == true|| newGame.getp1PieceSelected() == true){
+ //}
+  //image(whiteRook,0,0);
+    //String.deepToString(newGame.pieces);
+   newGame.drawPieces();
 }

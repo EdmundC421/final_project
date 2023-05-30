@@ -5,6 +5,7 @@ class piece{
 
   public piece(color pieceColor, PVector location) {
     this.pieceColor = pieceColor;
+    this.location = location;
   }
   public void move(int x, int y) {
     location.x = x;
@@ -213,6 +214,19 @@ public class board {
     }
 
 }
+void switchTurn(){
+  if(p1Standby || p1PieceSelected){
+    p1Standby = false;
+    p1PieceSelected = false;
+    p2Standby = true;
+    p2PieceSelected = false;
+  } else {
+    p1Standby = true;
+    p1PieceSelected = false;
+    p2Standby = false;
+    p2PieceSelected = false;
+  }
+}
 }
 //-----------------------------------------------------------------------------------------------------------
 
@@ -238,17 +252,25 @@ void draw() {
      newGame.drawPieces();
 }
 
+//(newGame.pieces[(int)mousePos.y][(int)mousePos.x] == null) || (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Color)
 void mouseClicked(){
   PVector mousePos = new PVector(mouseX/newGame.getSquareSize(), mouseY/newGame.getSquareSize());
   newGame.grid(); //resets grid
-  if (newGame.getp1PieceSelected()){
+  if (newGame.getp1PieceSelected() || newGame.getp2PieceSelected()){
+    if(newGame.p1Standby){
     //if selected, mouse pos becomes where piece is moved ( not implemented yet)
-    //check if selected location is a ally piece or not ( not implemented yet)
-    newGame.p1PieceSelected = false;
-    newGame.p1Standby = false;
-    newGame.p2Standby = true;
-    // ^^^^ above is just testing for switching btwn p1 and p2, breaks on purpose, will delete
-  }else{
+      newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
+      newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
+      newGame.pieces[(int)mousePos.y][(int)mousePos.x].location = new PVector ((int)mousePos.y, (int)mousePos.x);
+      newGame.switchTurn();
+    } else if (newGame.p2Standby){//edit please
+      newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
+      newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
+      newGame.pieces[(int)mousePos.y][(int)mousePos.x].location = new PVector ((int)mousePos.y, (int)mousePos.x);
+      newGame.switchTurn();
+    }
+  }
+  else{
     // actually select the piece
     if(newGame.getp1Standby()){
       newGame.p1Piece = newGame.pieces[(int)mousePos.y][(int)mousePos.x];

@@ -116,13 +116,15 @@ public class board {
   public color p2Color; //color for ai
   public boolean p1Standby; //waiting for p1 to select a piece
   public boolean p1PieceSelected; //piece is selected by p1, waiting for piece placement or deselection
+  public piece p1Piece; //selected piece (p1)
   public boolean p2Standby; //waiting for p2 to select a piece
   public boolean p2PieceSelected; //piece is selected by p1, waiting for piece placement or deselection
+  public piece p2Piece; //selected piece (p2)
   public boolean aiTurn; //ai's turn
 
   public int[][] boardColors;
   public piece[][] pieces;
-  public final int SQUARE_SIZE = 100;
+  public static final int SQUARE_SIZE = 100;
   void grid() {
     int counter = 0;
     int columnNum;
@@ -145,26 +147,30 @@ public class board {
     if(playerColor == color(#000000)){
       p1Color = color(#000000);
       p2Color = color(#FFFFFF);
-      p1Standby = true;
+      p1Standby = false;
       p1PieceSelected = false;
-      p2Standby = false;
+      p2Standby = true;
       p2PieceSelected = false;
     } else {
       p1Color = color(#FFFFFF);
       p2Color = color(#000000);
-      p1Standby = false;
+      p1Standby = true;
       p1PieceSelected =false;
       if(versusAi == false){
-        p2Standby = true;
+        p2Standby = false;
         p2PieceSelected = false;
         aiTurn = false;
       } else {
-        aiTurn = true;
+        aiTurn = false;
         p2Standby = false;
         p2PieceSelected = false;
       }   
     }
   }
+    public int getSquareSize(){
+      return SQUARE_SIZE;
+    }
+    
     public boolean getp1Standby(){
       return p1Standby;
     }
@@ -176,6 +182,12 @@ public class board {
     }
    public boolean getp2PieceSelected(){
       return p2PieceSelected;
+    }
+    public piece getp1PiecePos(){
+      return p1Piece;
+    }
+    public piece getp2PiecePos(){
+      return p2Piece;
     }
     public boolean getvsAi(){
       return vsAi;
@@ -195,7 +207,7 @@ public class board {
           if(pieces[column][row] == null){
             
           }else{
-            image(pieces[column][row].pieceImage,row*100,column*100);
+            image(pieces[column][row].pieceImage,row*SQUARE_SIZE,column*SQUARE_SIZE);
         }
       }
     }
@@ -224,4 +236,32 @@ void setup() {
 }
 void draw() {
      newGame.drawPieces();
+}
+
+void mouseClicked(){
+  PVector mousePos = new PVector(mouseX/newGame.getSquareSize(), mouseY/newGame.getSquareSize());
+  newGame.grid(); //resets grid
+  if (newGame.getp1PieceSelected()){
+    //if selected, mouse pos becomes where piece is moved ( not implemented yet)
+    //check if selected location is a ally piece or not ( not implemented yet)
+    newGame.p1PieceSelected = false;
+    newGame.p1Standby = false;
+    newGame.p2Standby = true;
+    // ^^^^ above is just testing for switching btwn p1 and p2, breaks on purpose, will delete
+  }else{
+    // actually select the piece
+    if(newGame.getp1Standby()){
+      newGame.p1Piece = newGame.pieces[(int)mousePos.y][(int)mousePos.x];
+      newGame.p1PieceSelected = true;
+      println("p1 " + (int)mousePos.y + ", " + (int)mousePos.x);
+    } else{
+      newGame.p2Piece = newGame.pieces[(int)mousePos.y][(int)mousePos.x];
+      println("p2 " + (int)mousePos.y + ", " + (int)mousePos.x);
+      newGame.p2PieceSelected = true;
+    }
+    //highlight square and possible moves (currently only selects on square bc allMoves is not implemented
+    fill(#FFF199);
+    square(mousePos.x*newGame.getSquareSize(), mousePos.y*newGame.getSquareSize(),newGame.getSquareSize());
+  }
+  
 }

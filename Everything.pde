@@ -3,7 +3,6 @@ class piece{
   public color pieceColor;
   public PImage pieceImage;
   PVector[] allMoves;
-  //abstract void calculateMoves();
   
   public piece(color pieceColor, PVector location) {
     this.pieceColor = pieceColor;
@@ -28,6 +27,12 @@ class piece{
   public String toString(){
     return pieceColor+" at " + location.x+ location.y;
   }
+  
+  private void calculateMoves(){
+    //empty for sake of individual classes
+  }
+  
+  
 }
 //---------------------------------------------------------------------------------------
 class rook extends piece {
@@ -275,12 +280,13 @@ void mouseClicked(){
   if (newGame.getp1PieceSelected() || newGame.getp2PieceSelected()){
     //print("piece selected option");
     if(newGame.p1Standby){
-    //if selected, mouse pos becomes where piece is moved ( not implemented yet)
+    //if selected, mouse pos becomes where piece is moved
         if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
           if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Piece.pieceColor){
             newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
             newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
-            newGame.p1Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+            //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
+            newGame.p1Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
             newGame.switchTurn();
           }else{
             newGame.p1PieceSelected = false;
@@ -289,7 +295,8 @@ void mouseClicked(){
         }else{
             newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
             newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
-            newGame.p1Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+            //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
+            newGame.p1Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
             newGame.switchTurn();
         }
       
@@ -298,7 +305,8 @@ void mouseClicked(){
         if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p2Piece.pieceColor){
           newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
           newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
-          newGame.p2Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+          //println("prevlocation2: " + (int)newGame.p2Piece.location.y + " " + (int)newGame.p2Piece.location.x);
+          newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
           newGame.switchTurn();
         }else{
           newGame.p2PieceSelected = false;
@@ -307,7 +315,8 @@ void mouseClicked(){
         }else{
           newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
           newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
-          newGame.p2Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+          //println("prevlocation2: " + (int)newGame.p2Piece.location.y + " " + (int)newGame.p2Piece.location.x);
+          newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
           newGame.switchTurn();
         }
     }

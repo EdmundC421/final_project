@@ -1,10 +1,13 @@
 class piece{
   public PVector location;
   public color pieceColor;
-    public PImage pieceImage;
-
+  public PImage pieceImage;
+  PVector[] allMoves;
+  //abstract void calculateMoves();
+  
   public piece(color pieceColor, PVector location) {
     this.pieceColor = pieceColor;
+    this.location = location;
   }
   public void move(int x, int y) {
     location.x = x;
@@ -22,12 +25,13 @@ class piece{
   public PImage getPieceImage(){
     return pieceImage;
   }
-  
+  public String toString(){
+    return pieceColor+" at " + location.x+ location.y;
+  }
 }
 //---------------------------------------------------------------------------------------
 class rook extends piece {
-  PVector[] allMoves;
-
+  
   public rook(color pieceColor, PVector location) {
     super(pieceColor, location);
     if(pieceColor == color(#FFFFFF)){
@@ -36,7 +40,7 @@ class rook extends piece {
       pieceImage = loadImage("blackRook.png");
     }
   }
-  
+  public void calculateMoves(){}
   
 }
 //---------------------------------------------------------------------------------------
@@ -213,6 +217,32 @@ public class board {
     }
 
 }
+void switchTurn(){
+  if(p1Standby){
+    p1Standby = false;
+    p1PieceSelected = false;
+    p1Piece = null;
+    p2Standby = true;
+    p2PieceSelected = false;
+    p2Piece = null;
+  } else {
+    p1Standby = true;
+    p1PieceSelected = false;
+    p1Piece = null;
+    p2Standby = false;
+    p2PieceSelected = false;
+    p2Piece = null;
+  }
+}
+
+void printBoard(){
+  for(piece[] pArray:pieces){
+    for(piece p: pArray){
+      System.out.print(p + "   ");
+    }
+    System.out.println();
+  }
+}
 }
 //-----------------------------------------------------------------------------------------------------------
 
@@ -238,30 +268,74 @@ void draw() {
      newGame.drawPieces();
 }
 
+//(newGame.pieces[(int)mousePos.y][(int)mousePos.x] == null) || (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Color)
 void mouseClicked(){
   PVector mousePos = new PVector(mouseX/newGame.getSquareSize(), mouseY/newGame.getSquareSize());
   newGame.grid(); //resets grid
-  if (newGame.getp1PieceSelected()){
+  if (newGame.getp1PieceSelected() || newGame.getp2PieceSelected()){
+    //print("piece selected option");
+    if(newGame.p1Standby){
     //if selected, mouse pos becomes where piece is moved ( not implemented yet)
-    //check if selected location is a ally piece or not ( not implemented yet)
-    newGame.p1PieceSelected = false;
-    newGame.p1Standby = false;
-    newGame.p2Standby = true;
-    // ^^^^ above is just testing for switching btwn p1 and p2, breaks on purpose, will delete
-  }else{
+        if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+          if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Piece.pieceColor){
+            newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
+            newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
+            newGame.p1Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+            newGame.switchTurn();
+          }else{
+            newGame.p1PieceSelected = false;
+            newGame.p1Piece = null;
+        }
+        }else{
+            newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
+            newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
+            newGame.p1Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+            newGame.switchTurn();
+        }
+      
+    } else if (newGame.p2Standby){//edit please
+        if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+        if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p2Piece.pieceColor){
+          newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
+          newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
+          newGame.p2Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+          newGame.switchTurn();
+        }else{
+          newGame.p2PieceSelected = false;
+          newGame.p2Piece = null;
+        }
+        }else{
+          newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
+          newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
+          newGame.p2Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+          newGame.switchTurn();
+        }
+    }
+  }
+  else{
     // actually select the piece
-    if(newGame.getp1Standby()){
+    if(newGame.p1Standby){
       newGame.p1Piece = newGame.pieces[(int)mousePos.y][(int)mousePos.x];
-      newGame.p1PieceSelected = true;
-      println("p1 " + (int)mousePos.y + ", " + (int)mousePos.x);
+      if(newGame.p1Piece != null){
+        if (newGame.p1Piece.pieceColor == newGame.p1Color){
+          newGame.p1PieceSelected = true;
+          println("p1 " + (int)mousePos.y + ", " + (int)mousePos.x);
+        }
+      }
     } else{
       newGame.p2Piece = newGame.pieces[(int)mousePos.y][(int)mousePos.x];
-      println("p2 " + (int)mousePos.y + ", " + (int)mousePos.x);
-      newGame.p2PieceSelected = true;
+      if(newGame.p2Piece != null){
+        if (newGame.p2Piece.pieceColor == newGame.p2Color){
+          println("p2 " + (int)mousePos.y + ", " + (int)mousePos.x);
+          newGame.p2PieceSelected = true;
+        }
+      }
     }
     //highlight square and possible moves (currently only selects on square bc allMoves is not implemented
     fill(#FFF199);
     square(mousePos.x*newGame.getSquareSize(), mousePos.y*newGame.getSquareSize(),newGame.getSquareSize());
   }
-  
+  newGame.printBoard();
+  System.out.println(newGame.p1Piece);
+  System.out.println(newGame.p2Piece);
 }

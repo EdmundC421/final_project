@@ -25,7 +25,9 @@ class piece{
   public PImage getPieceImage(){
     return pieceImage;
   }
-  
+  public String toString(){
+    return pieceColor+" at " + location.x+ location.y;
+  }
 }
 //---------------------------------------------------------------------------------------
 class rook extends piece {
@@ -219,13 +221,26 @@ void switchTurn(){
   if(p1Standby){
     p1Standby = false;
     p1PieceSelected = false;
+    p1Piece = null;
     p2Standby = true;
     p2PieceSelected = false;
+    p2Piece = null;
   } else {
     p1Standby = true;
     p1PieceSelected = false;
+    p1Piece = null;
     p2Standby = false;
     p2PieceSelected = false;
+    p2Piece = null;
+  }
+}
+
+void printBoard(){
+  for(piece[] pArray:pieces){
+    for(piece p: pArray){
+      System.out.print(p + "   ");
+    }
+    System.out.println();
   }
 }
 }
@@ -261,18 +276,40 @@ void mouseClicked(){
     //print("piece selected option");
     if(newGame.p1Standby){
     //if selected, mouse pos becomes where piece is moved ( not implemented yet)
-      
-        newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
-        newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
-        newGame.pieces[(int)mousePos.y][(int)mousePos.x].location = new PVector ((int)mousePos.y, (int)mousePos.x);
-        newGame.switchTurn();
+        if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+          if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Piece.pieceColor){
+            newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
+            newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
+            newGame.p1Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+            newGame.switchTurn();
+          }else{
+            newGame.p1PieceSelected = false;
+            newGame.p1Piece = null;
+        }
+        }else{
+            newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
+            newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
+            newGame.p1Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+            newGame.switchTurn();
+        }
       
     } else if (newGame.p2Standby){//edit please
-        newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
-        newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
-        newGame.pieces[(int)mousePos.y][(int)mousePos.x].location = new PVector ((int)mousePos.y, (int)mousePos.x);
-        newGame.switchTurn();
-   
+        if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+        if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p2Piece.pieceColor){
+          newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
+          newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
+          newGame.p2Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+          newGame.switchTurn();
+        }else{
+          newGame.p2PieceSelected = false;
+          newGame.p2Piece = null;
+        }
+        }else{
+          newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
+          newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
+          newGame.p2Piece.location = new PVector ((int)mousePos.y, (int)mousePos.x);
+          newGame.switchTurn();
+        }
     }
   }
   else{
@@ -298,5 +335,7 @@ void mouseClicked(){
     fill(#FFF199);
     square(mousePos.x*newGame.getSquareSize(), mousePos.y*newGame.getSquareSize(),newGame.getSquareSize());
   }
-  
+  newGame.printBoard();
+  System.out.println(newGame.p1Piece);
+  System.out.println(newGame.p2Piece);
 }

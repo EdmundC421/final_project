@@ -212,11 +212,15 @@ class king extends piece {
   
   public void calculateMoves(){
     super.calculateMoves();
-    for(float x = location.x - 1; x < location.x + 2; x++){
-      for(float y = location.y - 1; y < location.y + 2; y++){
-        if (x < 8 && x > -1 && y < 8 && x > -1){
-          allMoves.add(new PVector(x, +
-          +y));
+    for(int x = (int)location.x - 1; x < location.x + 2; x++){
+      for(int y = (int)location.y - 1; y < location.y + 2; y++){
+        if (x < 8 && x > -1 && y < 8 && y > -1){
+          if (newGame.pieces[y][x] != null){
+            if (newGame.pieces[y][x].pieceColor != pieceColor) {
+              allMoves.add(new PVector(x, y));
+            }
+          }
+          else allMoves.add(new PVector(x, y));
         }  
       }
     }
@@ -262,7 +266,8 @@ class knight extends piece {
 }
 //---------------------------------------------------------------------------------------
 class pawn extends piece {
-
+  public boolean takenFirstStep = false;
+  
   public pawn(color pieceColor, PVector location) {
     super(pieceColor, location);
     if(pieceColor == color(#FFFFFF)){
@@ -274,41 +279,72 @@ class pawn extends piece {
   
   public void calculateMoves(){
     super.calculateMoves();
+    int dir;
+    if (pieceColor == #FFFFFF) dir = -1; //forward
+    else dir = 1; //backwards
     int x = (int)location.x;
-    int y = (int)location.y;
-    if (pieceColor == #FFFFFF){
-      allMoves.add(new PVector(x, y));
-      allMoves.add(new PVector(x, y - 1));
-      if (y == 6) {
-        allMoves.add(new PVector(x, y - 2));
-      }
-      if (newGame.pieces[x - 1][y - 1] != null){
-        if (newGame.pieces[x - 1][y - 1].pieceColor == #000000){
-          allMoves.add(new PVector(x - 1, y - 1));
+    int y = (int)location.y + dir;
+    if (x < 8 && x > -1 && y < 8 && y > -1){
+      if (newGame.pieces[y][x] == null){
+        allMoves.add(new PVector(x, y));
+        if (y+dir < 8 && y + dir >=0){
+          if (takenFirstStep == false){
+            allMoves.add(new PVector(x, y+dir));
+            takenFirstStep = true;
+          }
         }
       }
-      if (newGame.pieces[x + 1][y - 1] != null){
-        if (newGame.pieces[x + 1][y - 1].pieceColor == #000000){
-          allMoves.add(new PVector(x + 1, y - 1));
+      if (x > 0){
+        if (newGame.pieces[y][x - 1] != null){
+          if (newGame.pieces[y][x - 1].pieceColor != pieceColor) allMoves.add(new PVector(x - 1, y));
         }
       }
-    }else if (pieceColor == #000000){
-      allMoves.add(new PVector(location.x, location.y));
-      allMoves.add(new PVector(location.x, location.y + 1));
-      if (location.y == 1) {
-        allMoves.add(new PVector(location.x, location.y + 2));
-      }
-      if (newGame.pieces[x - 1][y + 1] != null){
-        if (newGame.pieces[x - 1][y + 1].pieceColor == #FFFFFF){
-          allMoves.add(new PVector(x - 1, y + 1));
+      if (x < 7){
+        if (newGame.pieces[y][x + 1] != null){
+          if (newGame.pieces[y][x + 1].pieceColor != pieceColor) allMoves.add(new PVector(x + 1, y));
         }
       }
-      if (newGame.pieces[x + 1][y + 1] != null){
-        if (newGame.pieces[x + 1][y + 1].pieceColor == #FFFFFF){
-          allMoves.add(new PVector(x + 1, y + 1));
-        }
-      }
+      
     }
+ 
+    
+    
+    
+    //  allMoves.add(new PVector(x, y - 1));
+    //  if (y == 6) {
+    //    allMoves.add(new PVector(x, y - 2));
+    //  }
+    //  if (x - 1 >= 0){
+    //    if (newGame.pieces[x - 1][y - 1] != null){
+    //      if (newGame.pieces[x - 1][y - 1].pieceColor == #000000){
+    //        allMoves.add(new PVector(x - 1, y - 1));
+    //      }
+    //    }
+    //  }
+    //  if (x+1 < 8){
+    //    if (newGame.pieces[x + 1][y - 1] != null){
+    //      if (newGame.pieces[x + 1][y - 1].pieceColor == #000000){
+    //        allMoves.add(new PVector(x + 1, y - 1));
+    //      }
+    //    }
+    //  }
+    //}else if (pieceColor == #000000){
+    //  allMoves.add(new PVector(location.x, location.y));
+    //  allMoves.add(new PVector(location.x, location.y + 1));
+    //  if (location.y == 1) {
+    //    allMoves.add(new PVector(location.x, location.y + 2));
+    //  }
+    //  if (newGame.pieces[x - 1][y + 1] != null){
+    //    if (newGame.pieces[x - 1][y + 1].pieceColor == #FFFFFF){
+    //      allMoves.add(new PVector(x - 1, y + 1));
+    //    }
+    //  }
+    //  if (newGame.pieces[x + 1][y + 1] != null){
+    //    if (newGame.pieces[x + 1][y + 1].pieceColor == #FFFFFF){
+    //      allMoves.add(new PVector(x + 1, y + 1));
+    //    }
+    //  }
+    //}
   }
 }
 //---------------------------------------------------------------------------------------

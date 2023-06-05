@@ -32,6 +32,7 @@ abstract class piece{
   
   public void calculateMoves(){
     allMoves.clear();
+    allMoves.add(new PVector(location.x, location.y));
   }
   
   
@@ -50,11 +51,58 @@ class rook extends piece {
   
   public void calculateMoves(){
     super.calculateMoves();
-    for(int x = 0; x < 8; x++){
+    for(int x = (int)location.x+1; x < 8; x++){
+      if(newGame.pieces[(int)location.y][x] != null){
+        if(newGame.pieces[(int)location.y][x].pieceColor == pieceColor){
+          break;
+        }
+      }
       allMoves.add(new PVector(x, location.y));
+      System.out.println(x+" "+ location.y);
+      if(newGame.pieces[(int)location.y][x] != null){
+        if(newGame.pieces[(int)location.y][x].pieceColor != pieceColor){
+          break;
+        }
+      }
     }
-    for(int y = 0; y < 8; y++){
+    for(int y = (int)location.y+1; y < 8; y++){
+      if(newGame.pieces[y][(int)location.x] != null){
+        if(newGame.pieces[y][(int)location.x].pieceColor == pieceColor){
+          break;
+        }
+      }
       allMoves.add(new PVector(location.x, y)); 
+      if(newGame.pieces[y][(int)location.x] != null){
+        if(newGame.pieces[y][(int)location.x].pieceColor != pieceColor){
+          break;
+        }
+      }
+    }
+        for(int x = (int)location.x-1; x >= 0; x--){
+      if(newGame.pieces[(int)location.y][x] != null){
+        if(newGame.pieces[(int)location.y][x].pieceColor == pieceColor){
+          break;
+        }
+      }
+      allMoves.add(new PVector(x, location.y));
+      if(newGame.pieces[(int)location.y][x] != null){
+        if(newGame.pieces[(int)location.y][x].pieceColor != pieceColor){
+          break;
+        }
+      }
+    }
+    for(int y = (int)location.y-1; y >= 0; y--){
+      if(newGame.pieces[y][(int)location.x] != null){
+        if(newGame.pieces[y][(int)location.x].pieceColor == pieceColor){
+          break;
+        }
+      }
+      allMoves.add(new PVector(location.x, y)); 
+      if(newGame.pieces[y][(int)location.x] != null){
+        if(newGame.pieces[y][(int)location.x].pieceColor != pieceColor){
+          break;
+        }
+      }
     }
   }
     
@@ -76,31 +124,75 @@ class bishop extends piece {
   
   public void calculateMoves(){
     super.calculateMoves();
-    float x = location.x;
-    float y = location.y;
-    while(x < 8 && x > -1 && y < 8 && x > -1){
-      allMoves.add(new PVector(x, y));
+    int x = (int)location.x+1;
+    int y = (int)location.y+1;
+    while(x < 8 && x > -1 && y < 8 && y > -1){
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor == pieceColor){
+          break;
+        }
+      }
+      allMoves.add(new PVector(x,y));
+      System.out.println(x+" "+ location.y);
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor != pieceColor){
+          break;
+        }
+      }
       x++;
       y++;
     }
-    x = location.x;
-    y = location.y;
-    while(x < 8 && x > -1 && y < 8 && x > -1){
-      allMoves.add(new PVector(x, y));
+    x = (int)location.x-1;
+    y = (int)location.y+1;
+    while(x < 8 && x > -1 && y < 8 && y > -1){
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor == pieceColor){
+          break;
+        }
+      }
+      allMoves.add(new PVector(x,y));
+      System.out.println(x+" "+ location.y);
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor != pieceColor){
+          break;
+        }
+      }
       x--;
       y++;
     }
-    x = location.x;
-    y = location.y;
-    while(x < 8 && x > -1 && y < 8 && x > -1){
-      allMoves.add(new PVector(x, y));
+    x = (int)location.x-1;
+    y = (int)location.y-1;
+    while(x < 8 && x > -1 && y < 8 && y > -1){
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor == pieceColor){
+          break;
+        }
+      }
+      allMoves.add(new PVector(x,y));
+      System.out.println(x+" "+ location.y);
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor != pieceColor){
+          break;
+        }
+      }
       x--;
       y--;
     }
-    x = location.x;
-    y = location.y;
-    while(x < 8 && x > -1 && y < 8 && x > -1){
-      allMoves.add(new PVector(x, y));
+    x = (int)location.x+1;
+    y = (int)location.y-1;
+    while(x < 8 && x > -1 && y < 8 && y > -1){
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor == pieceColor){
+          break;
+        }
+      }
+      allMoves.add(new PVector(x,y));
+      System.out.println(x+" "+ location.y);
+      if(newGame.pieces[y][x] != null){
+        if(newGame.pieces[y][x].pieceColor != pieceColor){
+          break;
+        }
+      }
       x++;
       y--;
     }
@@ -144,8 +236,8 @@ class knight extends piece {
   
   public void calculateMoves(){
     super.calculateMoves();
-    float x = location.x;
-    float y = location.y;
+    int x = (int)location.x;
+    int y = (int)location.y;
     allMoves.add(new PVector(x - 2, y - 1));
     allMoves.add(new PVector(x - 2, y + 1));
     allMoves.add(new PVector(x + 2, y - 1));
@@ -158,6 +250,13 @@ class knight extends piece {
       if (allMoves.get(pos).x > 7 || allMoves.get(pos).x < 0 || allMoves.get(pos).y > 7 || allMoves.get(pos).y < 0){
         allMoves.remove(pos);
       }
+    }
+    for (int pos = allMoves.size() - 1; pos >= 0; pos--){
+      if(newGame.pieces[(int)allMoves.get(pos).y][(int)allMoves.get(pos).x] != null){
+          if(newGame.pieces[(int)allMoves.get(pos).y][(int)allMoves.get(pos).x].pieceColor == pieceColor){
+            allMoves.remove(pos);
+          }
+        }
     }
   }
 }
@@ -231,6 +330,34 @@ public queen(color pieceColor, PVector location) {
     }
     for(int y = 0; y < 8; y++){
       allMoves.add(new PVector(location.x, y)); 
+    }
+    float x = location.x;
+    float y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x++;
+      y++;
+    }
+    x = location.x;
+    y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x--;
+      y++;
+    }
+    x = location.x;
+    y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x--;
+      y--;
+    }
+    x = location.x;
+    y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x++;
+      y--;
     }
   }
 }

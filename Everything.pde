@@ -1,8 +1,10 @@
-class piece{
+import java.util.ArrayList;
+
+abstract class piece{
   public PVector location;
   public color pieceColor;
   public PImage pieceImage;
-  PVector[] allMoves;
+  ArrayList<PVector> allMoves = new ArrayList<PVector>();
   
   public piece(color pieceColor, PVector location) {
     this.pieceColor = pieceColor;
@@ -28,8 +30,8 @@ class piece{
     return pieceColor+" at " + location.x+ location.y;
   }
   
-  private void calculateMoves(){
-    //empty for sake of individual classes
+  public void calculateMoves(){
+    allMoves.clear();
   }
   
   
@@ -45,15 +47,23 @@ class rook extends piece {
       pieceImage = loadImage("blackRook.png");
     }
   }
-  public void calculateMoves(){}
   
+  public void calculateMoves(){
+    super.calculateMoves();
+    for(int x = 0; x < 8; x++){
+      allMoves.add(new PVector(x, location.y));
+    }
+    for(int y = 0; y < 8; y++){
+      allMoves.add(new PVector(location.x, y)); 
+    }
+  }
+    
 }
 //---------------------------------------------------------------------------------------
 class ai {
 }
 //---------------------------------------------------------------------------------------
 class bishop extends piece {
-  PVector[] allMoves;
 
   public bishop(color pieceColor, PVector location) {
     super(pieceColor, location);
@@ -63,10 +73,41 @@ class bishop extends piece {
       pieceImage = loadImage("blackBishop.png");
     }
   }
+  
+  public void calculateMoves(){
+    super.calculateMoves();
+    float x = location.x;
+    float y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x++;
+      y++;
+    }
+    x = location.x;
+    y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x--;
+      y++;
+    }
+    x = location.x;
+    y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x--;
+      y--;
+    }
+    x = location.x;
+    y = location.y;
+    while(x < 8 && x > -1 && y < 8 && x > -1){
+      allMoves.add(new PVector(x, y));
+      x++;
+      y--;
+    }
+  }
 }
 //---------------------------------------------------------------------------------------
 class king extends piece {
-  PVector[] allMoves;
 
   public king(color pieceColor, PVector location) {
     super(pieceColor, location);
@@ -76,10 +117,21 @@ class king extends piece {
       pieceImage = loadImage("blackKing.png");
     }
   }
+  
+  public void calculateMoves(){
+    super.calculateMoves();
+    for(float x = location.x - 1; x < location.x + 2; x++){
+      for(float y = location.y - 1; y < location.y + 2; y++){
+        if (x < 8 && x > -1 && y < 8 && x > -1){
+          allMoves.add(new PVector(x, +
+          +y));
+        }  
+      }
+    }
+  }
 }
 //---------------------------------------------------------------------------------------
 class knight extends piece {
-  PVector[] allMoves;
 
   public knight(color pieceColor, PVector location) {
     super(pieceColor, location);
@@ -89,10 +141,28 @@ class knight extends piece {
       pieceImage = loadImage("blackKnight.png");
     }
   }
+  
+  public void calculateMoves(){
+    super.calculateMoves();
+    float x = location.x;
+    float y = location.y;
+    allMoves.add(new PVector(x - 2, y - 1));
+    allMoves.add(new PVector(x - 2, y + 1));
+    allMoves.add(new PVector(x + 2, y - 1));
+    allMoves.add(new PVector(x + 2, y + 1));
+    allMoves.add(new PVector(x - 1, y - 2));
+    allMoves.add(new PVector(x + 1, y - 2));
+    allMoves.add(new PVector(x - 1, y + 2));
+    allMoves.add(new PVector(x + 1, y + 2));
+    for (int pos = allMoves.size() - 1; pos >= 0; pos--){
+      if (allMoves.get(pos).x > 7 || allMoves.get(pos).x < 0 || allMoves.get(pos).y > 7 || allMoves.get(pos).y < 0){
+        allMoves.remove(pos);
+      }
+    }
+  }
 }
 //---------------------------------------------------------------------------------------
 class pawn extends piece {
-  PVector[] allMoves;
 
   public pawn(color pieceColor, PVector location) {
     super(pieceColor, location);
@@ -102,10 +172,48 @@ class pawn extends piece {
       pieceImage = loadImage("blackPawn.png");
     }
   }
+  
+  public void calculateMoves(){
+    super.calculateMoves();
+    int x = (int)location.x;
+    int y = (int)location.y;
+    if (pieceColor == #FFFFFF){
+      allMoves.add(new PVector(x, y));
+      allMoves.add(new PVector(x, y - 1));
+      if (y == 6) {
+        allMoves.add(new PVector(x, y - 2));
+      }
+      if (newGame.pieces[x - 1][y - 1] != null){
+        if (newGame.pieces[x - 1][y - 1].pieceColor == #000000){
+          allMoves.add(new PVector(x - 1, y - 1));
+        }
+      }
+      if (newGame.pieces[x + 1][y - 1] != null){
+        if (newGame.pieces[x + 1][y - 1].pieceColor == #000000){
+          allMoves.add(new PVector(x + 1, y - 1));
+        }
+      }
+    }else if (pieceColor == #000000){
+      allMoves.add(new PVector(location.x, location.y));
+      allMoves.add(new PVector(location.x, location.y + 1));
+      if (location.y == 1) {
+        allMoves.add(new PVector(location.x, location.y + 2));
+      }
+      if (newGame.pieces[x - 1][y + 1] != null){
+        if (newGame.pieces[x - 1][y + 1].pieceColor == #FFFFFF){
+          allMoves.add(new PVector(x - 1, y + 1));
+        }
+      }
+      if (newGame.pieces[x + 1][y + 1] != null){
+        if (newGame.pieces[x + 1][y + 1].pieceColor == #FFFFFF){
+          allMoves.add(new PVector(x + 1, y + 1));
+        }
+      }
+    }
+  }
 }
 //---------------------------------------------------------------------------------------
 class queen extends piece{
-  PVector[] allMoves;
   
 public queen(color pieceColor, PVector location) {
     super(pieceColor, location);
@@ -113,6 +221,16 @@ public queen(color pieceColor, PVector location) {
       pieceImage = loadImage("whiteQueen.png");
     } else {
       pieceImage = loadImage("blackQueen.png");
+    }
+  }
+  
+  public void calculateMoves(){
+    super.calculateMoves();
+    for(int x = 0; x < 8; x++){
+      allMoves.add(new PVector(x, location.y));
+    }
+    for(int y = 0; y < 8; y++){
+      allMoves.add(new PVector(location.x, y)); 
     }
   }
 }
@@ -329,6 +447,14 @@ void mouseClicked(){
         if (newGame.p1Piece.pieceColor == newGame.p1Color){
           newGame.p1PieceSelected = true;
           println("p1 " + (int)mousePos.y + ", " + (int)mousePos.x);
+          //println(newGame.p1Piece.getClass());
+          newGame.p1Piece.calculateMoves();
+          fill(#FFF199);
+          for(PVector pos: newGame.p1Piece.allMoves){
+            println(pos.x + " " + pos.y);
+            println(".");
+            square(pos.x*newGame.getSquareSize(), pos.y*newGame.getSquareSize(),newGame.getSquareSize());
+          }
         }
       }
     } else{
@@ -337,12 +463,19 @@ void mouseClicked(){
         if (newGame.p2Piece.pieceColor == newGame.p2Color){
           println("p2 " + (int)mousePos.y + ", " + (int)mousePos.x);
           newGame.p2PieceSelected = true;
+          fill(#FFF199);
+          newGame.p2Piece.calculateMoves();
+          for(PVector pos: newGame.p2Piece.allMoves){
+            square(pos.x*newGame.getSquareSize(), pos.y*newGame.getSquareSize(),newGame.getSquareSize());
+          }
         }
       }
     }
     //highlight square and possible moves (currently only selects on square bc allMoves is not implemented
-    fill(#FFF199);
-    square(mousePos.x*newGame.getSquareSize(), mousePos.y*newGame.getSquareSize(),newGame.getSquareSize());
+    //fill(#FFF199);
+    //for(PVector pos: newGame.p1Piece.allMoves){
+    //square(mousePos.x*newGame.getSquareSize(), mousePos.y*newGame.getSquareSize(),newGame.getSquareSize());
+    //}
   }
   newGame.printBoard();
   System.out.println(newGame.p1Piece);

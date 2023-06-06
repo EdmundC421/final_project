@@ -282,32 +282,70 @@ class pawn extends piece {
       if (y == 6) {
         allMoves.add(new PVector(x, y - 2));
       }
-      if (newGame.pieces[x - 1][y - 1] != null){
-        if (newGame.pieces[x - 1][y - 1].pieceColor == #000000){
-          allMoves.add(new PVector(x - 1, y - 1));
+      
+      if(x == 0){//only check right p1
+        if (newGame.pieces[x + 1][y - 1] != null){
+          if (newGame.pieces[x + 1][y - 1].pieceColor == #000000){
+            allMoves.add(new PVector(x + 1, y - 1));
+          }
         }
       }
+      else if (x==7){
+        if (newGame.pieces[x - 1][y - 1] != null){
+          if (newGame.pieces[x - 1][y - 1].pieceColor == #000000){
+            allMoves.add(new PVector(x - 1, y - 1));
+          }
+        }
+      }
+      else{
+        if (newGame.pieces[x - 1][y - 1] != null){
+          if (newGame.pieces[x - 1][y - 1].pieceColor == #000000){
+            allMoves.add(new PVector(x - 1, y - 1));
+          }
+        }
+      
+      
       if (newGame.pieces[x + 1][y - 1] != null){
         if (newGame.pieces[x + 1][y - 1].pieceColor == #000000){
           allMoves.add(new PVector(x + 1, y - 1));
         }
       }
+    }
     }else if (pieceColor == #000000){
       allMoves.add(new PVector(location.x, location.y));
       allMoves.add(new PVector(location.x, location.y + 1));
       if (location.y == 1) {
         allMoves.add(new PVector(location.x, location.y + 2));
       }
-      if (newGame.pieces[x - 1][y + 1] != null){
-        if (newGame.pieces[x - 1][y + 1].pieceColor == #FFFFFF){
-          allMoves.add(new PVector(x - 1, y + 1));
+      
+      if(x == 0){//only check right
+        if (newGame.pieces[x + 1][y + 1] != null){
+          if (newGame.pieces[x + 1][y + 1].pieceColor == #FFFFFF){
+            allMoves.add(new PVector(x + 1, y + 1));
+          }
         }
       }
+      else if (x==7){
+        if (newGame.pieces[x - 1][y + 1] != null){
+          if (newGame.pieces[x - 1][y + 1].pieceColor == #FFFFFF){
+            allMoves.add(new PVector(x - 1, y + 1));
+          }
+        }
+      }
+      else{
+        if (newGame.pieces[x - 1][y + 1] != null){
+          if (newGame.pieces[x - 1][y + 1].pieceColor == #FFFFFF){
+            allMoves.add(new PVector(x - 1, y + 1));
+          }
+        }
       if (newGame.pieces[x + 1][y + 1] != null){
         if (newGame.pieces[x + 1][y + 1].pieceColor == #FFFFFF){
           allMoves.add(new PVector(x + 1, y + 1));
+          }
         }
       }
+      
+       
     }
   }
 }
@@ -607,4 +645,5 @@ void mouseClicked(){
   newGame.printBoard();
   System.out.println(newGame.p1Piece);
   System.out.println(newGame.p2Piece);
+  System.out.println((int)mouseX/100 + " " + (int)mouseY/100);
 }

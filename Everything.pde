@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 abstract class piece{
+  public String type;
   public PVector location;
   public color pieceColor;
   public PImage pieceImage;
@@ -27,7 +28,7 @@ abstract class piece{
     return pieceImage;
   }
   public String toString(){
-    return pieceColor+" at " + location.x+ location.y;
+    return pieceColor+ " " + type +" at (" + location.x+ ", "+ location.y+")";
   }
   
   public void calculateMoves(){
@@ -39,7 +40,6 @@ abstract class piece{
 }
 //---------------------------------------------------------------------------------------
 class rook extends piece {
-  
   public rook(color pieceColor, PVector location) {
     super(pieceColor, location);
     if(pieceColor == color(#FFFFFF)){
@@ -47,6 +47,7 @@ class rook extends piece {
     } else {
       pieceImage = loadImage("blackRook.png");
     }
+    type = "rook";
   }
   
   public void calculateMoves(){
@@ -120,6 +121,7 @@ class bishop extends piece {
     } else {
       pieceImage = loadImage("blackBishop.png");
     }
+    type = "bishop";
   }
   
   public void calculateMoves(){
@@ -208,6 +210,7 @@ class king extends piece {
     } else {
       pieceImage = loadImage("blackKing.png");
     }
+    type = "king";
   }
   
   public void calculateMoves(){
@@ -236,6 +239,7 @@ class knight extends piece {
     } else {
       pieceImage = loadImage("blackKnight.png");
     }
+    type = "knight";
   }
   
   public void calculateMoves(){
@@ -275,6 +279,7 @@ class pawn extends piece {
     } else {
       pieceImage = loadImage("blackPawn.png");
     }
+    type = "pawn";
   }
   
   public void calculateMoves(){
@@ -368,6 +373,7 @@ public queen(color pieceColor, PVector location) {
     } else {
       pieceImage = loadImage("blackQueen.png");
     }
+    type = "queen";
   }
   
   public void calculateMoves(){
@@ -519,6 +525,8 @@ public class board {
 
   public int[][] boardColors;
   public piece[][] pieces;
+  public ArrayList<piece> white = new ArrayList<piece>();
+  public ArrayList<piece> black = new ArrayList<piece>();
   public static final int SQUARE_SIZE = 100;
   void grid() {
     int counter = 0;
@@ -634,6 +642,14 @@ void printBoard(){
     System.out.println();
   }
 }
+
+void detectCheck(color c){
+    for(piece p: newGame.white){
+      for(PVector vector: p.allMoves){
+        
+      } 
+  }
+}
 }
 //-----------------------------------------------------------------------------------------------------------
 
@@ -654,6 +670,18 @@ void setup() {
         {new pawn(newGame.p1Color,new PVector(0,6)),new pawn(newGame.p1Color,new PVector(1,6)),new pawn(newGame.p1Color,new PVector(2,6)),new pawn(newGame.p1Color,new PVector(3,6)),new pawn(newGame.p1Color,new PVector(4,6)),new pawn(newGame.p1Color,new PVector(5,6)),new pawn(newGame.p1Color,new PVector(6,6)),new pawn(newGame.p1Color,new PVector(7,6))},
         {new rook(newGame.p1Color,new PVector(0,7)),new knight(newGame.p1Color,new PVector(1,7)),new bishop(newGame.p1Color,new PVector(2,7)),new queen(newGame.p1Color,new PVector(3,7)),new king(newGame.p1Color,new PVector(4,7)),new bishop(newGame.p1Color,new PVector(5,7)),new knight(newGame.p1Color,new PVector(6,7)),new rook(newGame.p1Color,new PVector(7,7))}  
     };  
+    for(piece[] row: newGame.pieces){
+      for(piece p: row){
+        if(p != null){
+          if(p.pieceColor == #FFFFFF){
+            newGame.white.add(p);
+          }
+          if(p.pieceColor == #000000){
+            newGame.black.add(p);
+          }
+        }
+      }
+    }
 }
 void draw() {
      newGame.drawPieces();
@@ -672,6 +700,11 @@ void mouseClicked(){
             if(newGame.p1Piece != null){
               for(PVector pos: newGame.p1Piece.allMoves){
                 if(pos.x == (int)mousePos.x && pos.y == (int)mousePos.y){
+                  if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+                    if(newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Piece.pieceColor){
+                    newGame.black.remove(newGame.pieces[(int)mousePos.y][(int)mousePos.x]);
+                  }
+                }
                   newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
                 newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
                   //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
@@ -689,11 +722,17 @@ void mouseClicked(){
             if(newGame.p1Piece != null){
               for(PVector pos: newGame.p1Piece.allMoves){
                 if(pos.x == (int)mousePos.x && pos.y == (int)mousePos.y){
-            newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
-            newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
-            //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
-            newGame.p1Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
-            newGame.switchTurn();
+                  if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+                    if(newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Piece.pieceColor){
+                    newGame.black.remove(newGame.pieces[(int)mousePos.y][(int)mousePos.x]);
+                  }
+                }
+                newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p1Piece;
+                newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
+                //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
+                newGame.p1Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
+                newGame.switchTurn();
+
               }
             }
           }
@@ -705,10 +744,15 @@ void mouseClicked(){
            if(newGame.p2Piece != null){
             for(PVector pos: newGame.p2Piece.allMoves){
               if(pos.x == (int)mousePos.x && pos.y == (int)mousePos.y){
+                if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+                  if(newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p2Piece.pieceColor){
+                    newGame.white.remove(newGame.pieces[(int)mousePos.y][(int)mousePos.x]);
+                  }
+                }
                 newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
                 newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
                 //println("prevlocation2: " + (int)newGame.p2Piece.location.y + " " + (int)newGame.p2Piece.location.x);
-                newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
+                newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);        
                 newGame.switchTurn();
                     }
                   }
@@ -721,6 +765,11 @@ void mouseClicked(){
           if(newGame.p2Piece != null){
               for(PVector pos: newGame.p2Piece.allMoves){
                 if(pos.x == (int)mousePos.x && pos.y == (int)mousePos.y){
+                  if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
+                    if(newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p2Piece.pieceColor){
+                    newGame.white.remove(newGame.pieces[(int)mousePos.y][(int)mousePos.x]);
+                  }
+                }
                   newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
                   newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
                   //println("prevlocation2: " + (int)newGame.p2Piece.location.y + " " + (int)newGame.p2Piece.location.x);
@@ -770,7 +819,19 @@ void mouseClicked(){
     //square(mousePos.x*newGame.getSquareSize(), mousePos.y*newGame.getSquareSize(),newGame.getSquareSize());
     //}
   }
+  
+
+  
+  
   newGame.printBoard();
   System.out.println(newGame.p1Piece);
   System.out.println(newGame.p2Piece);
+  for(piece p: newGame.white){
+    System.out.print(p+ "     ");
+  }
+  System.out.println();
+  System.out.println();
+  for(piece p: newGame.black){
+    System.out.print(p+ "     ");
+  }
 }

@@ -732,6 +732,7 @@ void mouseClicked(){
                 //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
                 newGame.p1Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
                 newGame.switchTurn();
+
               }
             }
           }
@@ -751,7 +752,7 @@ void mouseClicked(){
                 newGame.pieces[(int)mousePos.y][(int)mousePos.x] = newGame.p2Piece;
                 newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
                 //println("prevlocation2: " + (int)newGame.p2Piece.location.y + " " + (int)newGame.p2Piece.location.x);
-                newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);              
+                newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);        
                 newGame.switchTurn();
                     }
                   }

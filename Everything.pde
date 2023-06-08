@@ -305,7 +305,9 @@ class pawn extends piece {
         allMoves.add(new PVector(x, y));
         if (y+dir < 8 && y + dir >=0){
           if (takenFirstStep == false){
-            allMoves.add(new PVector(x, y+dir));
+            if(newGame.pieces[y+dir][x] == null){
+              allMoves.add(new PVector(x, y+dir));
+            }
             takenFirstStep = true;
           }
         }
@@ -325,42 +327,6 @@ class pawn extends piece {
  
     
     
-    
-    //  allMoves.add(new PVector(x, y - 1));
-    //  if (y == 6) {
-    //    allMoves.add(new PVector(x, y - 2));
-    //  }
-    //  if (x - 1 >= 0){
-    //    if (newGame.pieces[x - 1][y - 1] != null){
-    //      if (newGame.pieces[x - 1][y - 1].pieceColor == #000000){
-    //        allMoves.add(new PVector(x - 1, y - 1));
-    //      }
-    //    }
-    //  }
-    //  if (x+1 < 8){
-    //    if (newGame.pieces[x + 1][y - 1] != null){
-    //      if (newGame.pieces[x + 1][y - 1].pieceColor == #000000){
-    //        allMoves.add(new PVector(x + 1, y - 1));
-    //      }
-    //    }
-    //  }
-    //}else if (pieceColor == #000000){
-    //  allMoves.add(new PVector(location.x, location.y));
-    //  allMoves.add(new PVector(location.x, location.y + 1));
-    //  if (location.y == 1) {
-    //    allMoves.add(new PVector(location.x, location.y + 2));
-    //  }
-    //  if (newGame.pieces[x - 1][y + 1] != null){
-    //    if (newGame.pieces[x - 1][y + 1].pieceColor == #FFFFFF){
-    //      allMoves.add(new PVector(x - 1, y + 1));
-    //    }
-    //  }
-    //  if (newGame.pieces[x + 1][y + 1] != null){
-    //    if (newGame.pieces[x + 1][y + 1].pieceColor == #FFFFFF){
-    //      allMoves.add(new PVector(x + 1, y + 1));
-    //    }
-    //  }
-    //}
   }
 }
 //---------------------------------------------------------------------------------------
@@ -522,6 +488,8 @@ public class board {
   public boolean p2PieceSelected; //piece is selected by p1, waiting for piece placement or deselection
   public piece p2Piece; //selected piece (p2)
   public boolean aiTurn; //ai's turn
+  public boolean p1PawnPromo;
+  public boolean p2PawnPromo;
 
   public int[][] boardColors;
   public piece[][] pieces;
@@ -569,6 +537,8 @@ public class board {
         p2PieceSelected = false;
       }   
     }
+    p1PawnPromo = false;
+    p2PawnPromo = false;
   }
     public int getSquareSize(){
       return SQUARE_SIZE;
@@ -643,6 +613,34 @@ void printBoard(){
   }
 }
 
+void pawnPromo(){
+  if (p1PawnPromo || p2PawnPromo){
+    fill(#FFFFFF);
+    rect(150, 330, 500, 140);
+    fill(#000000);
+    textSize(20);
+    textAlign(CENTER);
+    text("[1]", 225, 360);
+    text("[2]", 345, 360);
+    text("[3]", 465, 360);
+    text("[4]", 585, 360);
+  }
+  if (p1PawnPromo){
+    image(loadImage("whiteRook.png"), 170, 360);
+    image(loadImage("whiteKnight.png"), 290, 360);
+    image(loadImage("whiteBishop.png"), 410, 360);
+    image(loadImage("whiteQueen.png"), 530, 360);
+    
+    
+  }
+  else if (p2PawnPromo){
+    image(loadImage("blackRook.png"), 170, 360);
+    image(loadImage("blackKnight.png"), 290, 360);
+    image(loadImage("blackBishop.png"), 410, 360);
+    image(loadImage("blackQueen.png"), 530, 360);
+  }
+}
+
 void detectCheck(color c){
     for(piece p: newGame.white){
       for(PVector vector: p.allMoves){
@@ -689,6 +687,10 @@ void draw() {
 
 //(newGame.pieces[(int)mousePos.y][(int)mousePos.x] == null) || (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Color)
 void mouseClicked(){
+  if (newGame.p1PawnPromo || newGame.p2PawnPromo){
+    newGame.pawnPromo();
+    return;
+  }
   PVector mousePos = new PVector(mouseX/newGame.getSquareSize(), mouseY/newGame.getSquareSize());
   newGame.grid(); //resets grid
   if (newGame.getp1PieceSelected() || newGame.getp2PieceSelected()){
@@ -709,7 +711,16 @@ void mouseClicked(){
                 newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
                   //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
                   newGame.p1Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
-                  newGame.switchTurn();
+                  if (newGame.p1Piece.type.equals("pawn") && newGame.p1Piece.location.y == 0){
+                    newGame.p1PawnPromo = true;
+                    int x = (int)newGame.p1Piece.location.x;
+                    int y = (int)newGame.p1Piece.location.y;
+                    newGame.switchTurn();
+                    newGame.p1Piece = newGame.pieces[y][x];
+                    newGame.pawnPromo();
+                  }else{
+                    newGame.switchTurn();
+                  }
                 }
               }
             }
@@ -731,8 +742,16 @@ void mouseClicked(){
                 newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = null;
                 //println("prevlocation1: " + (int)newGame.p1Piece.location.y + " " + (int)newGame.p1Piece.location.x);
                 newGame.p1Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
-                newGame.switchTurn();
-
+                if (newGame.p1Piece.type.equals("pawn") && newGame.p1Piece.location.y == 0){
+                  newGame.p1PawnPromo = true;
+                  int x = (int)newGame.p1Piece.location.x;
+                  int y = (int)newGame.p1Piece.location.y;
+                  newGame.switchTurn();
+                  newGame.p1Piece = newGame.pieces[y][x];
+                  newGame.pawnPromo();
+                }else{
+                  newGame.switchTurn();
+                }
               }
             }
           }
@@ -753,10 +772,19 @@ void mouseClicked(){
                 newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
                 //println("prevlocation2: " + (int)newGame.p2Piece.location.y + " " + (int)newGame.p2Piece.location.x);
                 newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);        
-                newGame.switchTurn();
-                    }
-                  }
+                if (newGame.p2Piece.type.equals("pawn") && newGame.p2Piece.location.y == 7){
+                  newGame.p2PawnPromo = true;
+                  int x = (int)newGame.p2Piece.location.x;
+                  int y = (int)newGame.p2Piece.location.y;
+                  newGame.switchTurn();
+                  newGame.p2Piece = newGame.pieces[y][x];
+                  newGame.pawnPromo();
+                }else{
+                  newGame.switchTurn();
                 }
+              }
+            }
+          }
         }else{
           newGame.p2PieceSelected = false;
           newGame.p2Piece = null;
@@ -774,7 +802,16 @@ void mouseClicked(){
                   newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = null;
                   //println("prevlocation2: " + (int)newGame.p2Piece.location.y + " " + (int)newGame.p2Piece.location.x);
                   newGame.p2Piece.location = new PVector ((int)mousePos.x, (int)mousePos.y);
-                  newGame.switchTurn();
+                  if (newGame.p2Piece.type.equals("pawn") && newGame.p2Piece.location.y == 7){
+                    newGame.p2PawnPromo = true;
+                    int x = (int)newGame.p2Piece.location.x;
+                    int y = (int)newGame.p2Piece.location.y;
+                    newGame.switchTurn();
+                    newGame.p2Piece = newGame.pieces[y][x];
+                    newGame.pawnPromo();
+                  }else{
+                    newGame.switchTurn();
+                  }
                 }
               }
           }
@@ -820,6 +857,7 @@ void mouseClicked(){
     //}
   }
   
+  
 
   
   
@@ -833,5 +871,57 @@ void mouseClicked(){
   System.out.println();
   for(piece p: newGame.black){
     System.out.print(p+ "     ");
+  }
+}
+
+void keyPressed(){
+  if ((newGame.p1PawnPromo || newGame.p2PawnPromo) && (key == 49 || key == 50 || key == 51 || key == 52)){
+    if (newGame.p1PawnPromo){
+      if (key == 49){
+        //println("replace: " +  newGame.p1Piece+ " " );
+        newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = new rook(newGame.p1Color, new PVector(newGame.p1Piece.location.x, newGame.p1Piece.location.y));
+        //println("promoted to: " + newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x]);
+        newGame.white.add(newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x]);
+      }
+      if (key == 50){
+        newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = new knight(newGame.p1Color, new PVector(newGame.p1Piece.location.x, newGame.p1Piece.location.y));
+        newGame.white.add(newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x]);
+      }
+      if (key == 51){
+        newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = new bishop(newGame.p1Color, new PVector(newGame.p1Piece.location.x, newGame.p1Piece.location.y));
+        newGame.white.add(newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x]);
+      }
+      if (key == 52){
+        newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x] = new queen(newGame.p1Color, new PVector(newGame.p1Piece.location.x, newGame.p1Piece.location.y));
+        newGame.white.add(newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x]);
+      }
+      newGame.white.remove(newGame.p1Piece);
+      newGame.p1Piece = null;
+    }
+    if (newGame.p2PawnPromo){
+      if (key == 49){
+        //println("replace: " +  newGame.p1Piece+ " " );
+        newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = new rook(newGame.p2Color, new PVector(newGame.p2Piece.location.x, newGame.p2Piece.location.y));
+        //println("promoted to: " + newGame.pieces[(int)newGame.p1Piece.location.y][(int)newGame.p1Piece.location.x]);
+        newGame.black.add(newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x]);
+      }
+      if (key == 50){
+        newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = new knight(newGame.p2Color, new PVector(newGame.p2Piece.location.x, newGame.p2Piece.location.y));
+        newGame.black.add(newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x]);
+      }
+      if (key == 51){
+        newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = new bishop(newGame.p2Color, new PVector(newGame.p2Piece.location.x, newGame.p2Piece.location.y));
+        newGame.black.add(newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x]);
+      }
+      if (key == 52){
+        newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x] = new queen(newGame.p2Color, new PVector(newGame.p2Piece.location.x, newGame.p2Piece.location.y));
+        newGame.black.add(newGame.pieces[(int)newGame.p2Piece.location.y][(int)newGame.p2Piece.location.x]);
+      }
+      newGame.black.remove(newGame.p2Piece);
+      newGame.p2Piece = null;
+    }
+    newGame.grid();
+    newGame.p1PawnPromo = false;
+    newGame.p2PawnPromo = false;
   }
 }

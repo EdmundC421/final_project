@@ -721,7 +721,7 @@ void draw() {
              newGame.p1Checked = false;
            }
          }
-       }
+       }  
        if(newGame.p2Standby != true){
          p.allMoves.clear();}
        }
@@ -738,6 +738,19 @@ void draw() {
       newGame.p1PieceSelected = false;
       newGame.p2PieceSelected = false;
     }
+    newGame.gameover = true;
+    for(piece p: newGame.white){
+      if((p.type.equals("king"))){
+        newGame.gameover= false;
+      }
+    }
+    
+    if(newGame.gameover){
+      newGame.p1Standby = false;
+      newGame.p2Standby = false;
+      newGame.p1PieceSelected = false;
+      newGame.p2PieceSelected = false;
+    }  
 }
 
 //(newGame.pieces[(int)mousePos.y][(int)mousePos.x] == null) || (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Color)

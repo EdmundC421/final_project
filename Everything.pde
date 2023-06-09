@@ -51,7 +51,7 @@ class rook extends piece {
   }
   
   public void calculateMoves(){
-    super.calculateMoves();
+    //super.calculateMoves();
     for(int x = (int)location.x+1; x < 8; x++){
       if(newGame.pieces[(int)location.y][x] != null){
         if(newGame.pieces[(int)location.y][x].pieceColor == pieceColor){
@@ -490,6 +490,8 @@ public class board {
   public boolean aiTurn; //ai's turn
   public boolean p1PawnPromo;
   public boolean p2PawnPromo;
+  public boolean p1Checked;
+  public boolean p2Checked;
 
   public int[][] boardColors;
   public piece[][] pieces;
@@ -539,6 +541,8 @@ public class board {
     }
     p1PawnPromo = false;
     p2PawnPromo = false;
+    p1Checked = false;
+    p2Checked = false;
   }
     public int getSquareSize(){
       return SQUARE_SIZE;
@@ -641,13 +645,7 @@ void pawnPromo(){
   }
 }
 
-void detectCheck(color c){
-    for(piece p: newGame.white){
-      for(PVector vector: p.allMoves){
-        
-      } 
-  }
-}
+
 }
 //-----------------------------------------------------------------------------------------------------------
 
@@ -682,7 +680,61 @@ void setup() {
     }
 }
 void draw() {
-     newGame.drawPieces();
+   newGame.drawPieces();
+    for(piece p: newGame.white){
+      if(newGame.p1Standby != true){
+         p.calculateMoves();
+       }
+       for(PVector pos: p.allMoves){
+         if(newGame.pieces[(int)pos.y][(int)pos.x] != null/* && newGame.p1Piece != null*/){
+           //newGame.pieces[(int)pos.y][(int)pos.x].calculateMoves();
+           if(newGame.pieces[(int)pos.y][(int)pos.x].type.equals("king") && newGame.pieces[(int)pos.y][(int)pos.x].pieceColor == #000000/*newGame.p1Piece.pieceColor != #FFFFFF*/){
+             //newGame.p2Checked = true;
+             fill(#FF0000);
+             square(pos.x*100,pos.y*100,100);
+             image(newGame.pieces[(int)pos.y][(int)pos.x].pieceImage,(int)pos.x*100,(int)pos.y*100);
+             //newGame.pieces[(int)pos.y][(int)pos.x].allMoves.clear();
+           }
+         }
+       } 
+       if(newGame.p1Standby != true){
+         p.allMoves.clear();
+       }
+     }
+     for(piece p: newGame.black){
+       if(newGame.p2Standby != true){
+         p.calculateMoves();
+       }
+       for(PVector pos: p.allMoves){
+         if(newGame.pieces[(int)pos.y][(int)pos.x] != null /*&& newGame.p1Piece != null*/){
+           //newGame.pieces[(int)pos.y][(int)pos.x].calculateMoves();
+           if(newGame.pieces[(int)pos.y][(int)pos.x].type.equals("king") && newGame.pieces[(int)pos.y][(int)pos.x].pieceColor == #FFFFFF /*newGame.p2Piece.pieceColor != #000000*/){
+             //newGame.p1Checked = true;
+             fill(#FF0000);
+             square(pos.x*100,pos.y*100,100);
+             image(newGame.pieces[(int)pos.y][(int)pos.x].pieceImage,(int)pos.x*100,(int)pos.y*100);
+           }
+         }
+       }
+       if(newGame.p2Standby != true){
+         p.allMoves.clear();}
+       }
+   //if(newGame.p1Checked = true){
+   //  for(piece p:newGame.white){
+   //    if(p.type.equals("king")){
+   //      square(p.location.x*100,p.location.y*100,100);
+   //      image(newGame.pieces[(int)p.location.x][(int)p.location.y].pieceImage,(int)p.location.x*100,(int)p.location.y*100);
+   //    }
+   //  }
+   //}
+   //if(newGame.p2Checked = true){
+   //  for(piece p:newGame.white){
+   //    if(p.type.equals("king")){
+   //      square(p.location.x*100,p.location.y*100,100);
+   //      image(newGame.pieces[(int)p.location.x][(int)p.location.y].pieceImage,(int)p.location.x*100,(int)p.location.y*100);
+   //    }
+   //  }
+   //}
 }
 
 //(newGame.pieces[(int)mousePos.y][(int)mousePos.x] == null) || (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Color)
@@ -857,7 +909,7 @@ void mouseClicked(){
     //}
   }
   
-  
+  //detect check
 
   
   

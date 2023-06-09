@@ -365,6 +365,7 @@ public queen(color pieceColor, PVector location) {
           break;
         }
       }
+      
       allMoves.add(new PVector(location.x, y)); 
       if(newGame.pieces[y][(int)location.x] != null){
         if(newGame.pieces[y][(int)location.x].pieceColor != pieceColor){
@@ -492,9 +493,11 @@ public class board {
   public boolean p2PawnPromo;
   public boolean p1Checked;
   public boolean p2Checked;
+  public boolean gameover;
 
   public int[][] boardColors;
   public piece[][] pieces;
+  public piece[][] clonedArray;
   public ArrayList<piece> white = new ArrayList<piece>();
   public ArrayList<piece> black = new ArrayList<piece>();
   public static final int SQUARE_SIZE = 100;
@@ -517,6 +520,7 @@ public class board {
   }
 
   public board(color playerColor, boolean versusAi) {
+    gameover = false;
     if(playerColor == color(#000000)){
       p1Color = color(#000000);
       p2Color = color(#FFFFFF);
@@ -588,7 +592,6 @@ public class board {
         }
       }
     }
-
 }
 void switchTurn(){
   if(p1Standby){
@@ -689,11 +692,12 @@ void draw() {
          if(newGame.pieces[(int)pos.y][(int)pos.x] != null/* && newGame.p1Piece != null*/){
            //newGame.pieces[(int)pos.y][(int)pos.x].calculateMoves();
            if(newGame.pieces[(int)pos.y][(int)pos.x].type.equals("king") && newGame.pieces[(int)pos.y][(int)pos.x].pieceColor == #000000/*newGame.p1Piece.pieceColor != #FFFFFF*/){
-             //newGame.p2Checked = true;
+             newGame.p2Checked = true;
              fill(#FF0000);
              square(pos.x*100,pos.y*100,100);
              image(newGame.pieces[(int)pos.y][(int)pos.x].pieceImage,(int)pos.x*100,(int)pos.y*100);
-             //newGame.pieces[(int)pos.y][(int)pos.x].allMoves.clear();
+           }else{
+             newGame.p2Checked = false;
            }
          }
        } 
@@ -709,32 +713,44 @@ void draw() {
          if(newGame.pieces[(int)pos.y][(int)pos.x] != null /*&& newGame.p1Piece != null*/){
            //newGame.pieces[(int)pos.y][(int)pos.x].calculateMoves();
            if(newGame.pieces[(int)pos.y][(int)pos.x].type.equals("king") && newGame.pieces[(int)pos.y][(int)pos.x].pieceColor == #FFFFFF /*newGame.p2Piece.pieceColor != #000000*/){
-             //newGame.p1Checked = true;
+             newGame.p1Checked = true;
              fill(#FF0000);
              square(pos.x*100,pos.y*100,100);
              image(newGame.pieces[(int)pos.y][(int)pos.x].pieceImage,(int)pos.x*100,(int)pos.y*100);
+           } else{
+             newGame.p1Checked = false;
            }
          }
-       }
+       }  
        if(newGame.p2Standby != true){
          p.allMoves.clear();}
        }
-   //if(newGame.p1Checked = true){
-   //  for(piece p:newGame.white){
-   //    if(p.type.equals("king")){
-   //      square(p.location.x*100,p.location.y*100,100);
-   //      image(newGame.pieces[(int)p.location.x][(int)p.location.y].pieceImage,(int)p.location.x*100,(int)p.location.y*100);
-   //    }
-   //  }
-   //}
-   //if(newGame.p2Checked = true){
-   //  for(piece p:newGame.white){
-   //    if(p.type.equals("king")){
-   //      square(p.location.x*100,p.location.y*100,100);
-   //      image(newGame.pieces[(int)p.location.x][(int)p.location.y].pieceImage,(int)p.location.x*100,(int)p.location.y*100);
-   //    }
-   //  }
-   //}
+       newGame.gameover = true;
+    for(piece p: newGame.black){
+      if((p.type.equals("king"))){
+        newGame.gameover= false;
+      }
+    }
+    
+    if(newGame.gameover){
+      newGame.p1Standby = false;
+      newGame.p2Standby = false;
+      newGame.p1PieceSelected = false;
+      newGame.p2PieceSelected = false;
+    }
+    newGame.gameover = true;
+    for(piece p: newGame.white){
+      if((p.type.equals("king"))){
+        newGame.gameover= false;
+      }
+    }
+    
+    if(newGame.gameover){
+      newGame.p1Standby = false;
+      newGame.p2Standby = false;
+      newGame.p1PieceSelected = false;
+      newGame.p2PieceSelected = false;
+    }  
 }
 
 //(newGame.pieces[(int)mousePos.y][(int)mousePos.x] == null) || (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Color)
@@ -747,7 +763,7 @@ void mouseClicked(){
   newGame.grid(); //resets grid
   if (newGame.getp1PieceSelected() || newGame.getp2PieceSelected()){
     //print("piece selected option");
-    if(newGame.p1Standby){
+    if(newGame.p1Standby){ //****************************************************************************************************************************************************************************************************************************************************************
     //if selected, mouse pos becomes where piece is moved
         if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
           if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p1Piece.pieceColor){
@@ -809,7 +825,7 @@ void mouseClicked(){
           }
         }
       
-    } else if (newGame.p2Standby){//edit please
+    } else if (newGame.p2Standby){//edit please //****************************************************************************************************************************************************************************************************************************************************************
         if(newGame.pieces[(int)mousePos.y][(int)mousePos.x] != null){
         if (newGame.pieces[(int)mousePos.y][(int)mousePos.x].pieceColor != newGame.p2Piece.pieceColor){
            if(newGame.p2Piece != null){
